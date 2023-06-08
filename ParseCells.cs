@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CsvHelper;
 
 namespace TestReading
 {
@@ -15,14 +17,11 @@ namespace TestReading
             list = new List<Cells>();
             try
             {
-                FileInfo file = new FileInfo(filename);
-                using (StreamReader sr = new StreamReader(file.OpenRead()))
+
+                using (StreamReader sr = new StreamReader(filename))
                 {
-                    if (sr.ReadLine() != null)
-                    {
-                        // Skip the first line
-                    }
-                    string line;
+                    string line = sr.ReadLine();
+                    int i = 0;
                     while ((line = sr.ReadLine()) != null)
                     {
                         Cells phone = CreatePhone(line);
@@ -38,12 +37,13 @@ namespace TestReading
 
         public Cells CreatePhone(string line)
         {
-            string[] tokens = line.Split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", StringSplitOptions.None);
-            //if (tokens.Length != 12)
-           // {
-             //   throw new InvalidOperationException("Input string is malformed");
-           // }
+            string quotes = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
+            string[] tokens = Regex.Split(line, quotes);
+            if (tokens.Length != 12)
+            {
+                throw new InvalidOperationException("Input string not detected");
+            }
 
 
             for (int i = 0; i < tokens.Length; i++)
@@ -53,13 +53,34 @@ namespace TestReading
 
             string oem = CheckStringInput(tokens[0]);
             string model = CheckStringInput(tokens[1]);
-            int? announcedYear = GetYearInt(tokens[2]);
+            int announcedYear;
+            try
+            {
+                 announcedYear = (int)GetYearInt(tokens[2]);
+            }
+            catch(Exception e) {
+                announcedYear = 0;
+            }
             string launchStatus = GetYearStr(tokens[3]);
             string bodyDimensions = tokens[4];
-            float? bodyWeight = GetBodyWeight(tokens[5]);
+            float bodyWeight;
+            try
+            {
+                bodyWeight = (float)GetBodyWeight(tokens[5]);
+            } catch(Exception e)
+            {
+                bodyWeight = 0;
+            }
             string bodySim = GetBodySim(tokens[6]);
             string displayType = CheckStringInput(tokens[7]);
-            float? displaySize = GetDisplaySize(tokens[8]);
+            float displaySize;
+            try
+            {
+                displaySize = (float)GetDisplaySize(tokens[8]);
+            } catch(Exception e)
+            {
+                displaySize = 0;
+            }
             string resolution = CheckStringInput(tokens[9]);
             string sensors = GetFeatureSensors(tokens[10]);
             string os = GetPlatformOS(tokens[11]);
@@ -130,7 +151,8 @@ namespace TestReading
             }
             string res = System.Text.RegularExpressions.Regex.Replace(input, @"[^\d]", "");
 
-            return res.Substring(0, 4);
+
+            return res.Substring(0, (res.IndexOf(',') != -1) ? res.IndexOf(',') : res.Length);
         }
 
         public float? GetBodyWeight(string input)
@@ -148,7 +170,7 @@ namespace TestReading
             }
             catch (FormatException e)
             {
-                // Console.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
             return res;
         }
@@ -180,24 +202,14 @@ namespace TestReading
             }
             catch (FormatException e)
             {
-                // Console.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
             return res;
         }
 
         public string GetFeatureSensors(string input)
         {
-            bool hasLetters = false;
-
-            foreach (char ch in input)
-            {
-                if (char.IsLetter(ch))
-                {
-                    hasLetters = true;
-                }
-            }
-
-            return hasLetters ? input : null;
+            return input;
         }
 
         public string GetPlatformOS(string input)
@@ -221,7 +233,7 @@ namespace TestReading
             int count = 0;
             foreach (Cells phone in list)
             {
-                string sensors = phone.FeaturesSensors;
+                string sensors = phone.getFeatures_sensors;
                 if (!sensors.Contains(","))
                 {
                     count++;
@@ -236,19 +248,21 @@ namespace TestReading
 
             foreach (Cells phone in list)
             {
-                if (phone.OEM == null || phone.BodyWeight == null)
+                if (phone.OEM == null || phone.getBodyWeight == null)
                 {
                     continue;
                 }
 
                 if (map.ContainsKey(phone.OEM))
                 {
-                    map[phone.OEM].Add((double)phone.BodyWeight);
+                    map[phone.OEM].Add((double)phone.getBodyWeight);
                 }
                 else
                 {
-                    map[phone.OEM] = new List<double> { (double)phone.BodyWeight };
+                    map[phone.OEM] = new List<double> { (double)phone.getBodyWeight };
                 }
+
+           
             }
 
             string oem = "";
@@ -264,8 +278,7 @@ namespace TestReading
                     oem = key;
                 }
             }
-
-            Console.WriteLine("Highest average weight: " + avg);
+            Console.WriteLine(oem + "Hi");
             return oem;
         }
 
@@ -305,12 +318,15 @@ namespace TestReading
             List<float> res = new List<float>();
             foreach (Cells phone in list)
             {
-                if (phone.BodyWeight != null)
+                if (phone.getBodyWeight != null)
                 {
-                    res.Add((float)phone.BodyWeight);
+                    res.Add((float)phone.getBodyWeight);
+                  
                 }
             }
+            
             res.Sort();
+
             return res[0];
         }
 
@@ -375,5 +391,6 @@ namespace TestReading
             }
             return diff;
         }
+
     }
 }
