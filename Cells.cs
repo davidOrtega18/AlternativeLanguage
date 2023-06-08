@@ -8,12 +8,12 @@ namespace TestReading
 {
     internal class Cells
     {
-        
+
+
         private string oem;
         private string model;
         private int launch_announced;
         private int year_released;
-        private string status;
         private string body_dimensions;
         private float body_weight;
         private string body_sim;
@@ -24,29 +24,27 @@ namespace TestReading
         private string platform_os;
         private int? announcedYear;
         private string launchStatus;
-        private float? bodyWeight;
         private float? displaySize;
         private string resolution;
-        private string sensors;
         private string os;
 
-        public Cells(string oem, string model, int? announcedYear, string launchStatus, string bodyDimensions, float? bodyWeight, string bodySim, string displayType, float? displaySize, string resolution, string sensors, string os)
+        public Cells(string oem, string model, int? announcedYear, string launchStatus, string bodyDimensions, float BodyWeight, string bodySim, string displayType, float? displaySize, string resolution, string sensors, string os)
         {
             this.oem = oem;
             this.model = model;
             this.announcedYear = announcedYear;
             this.launchStatus = launchStatus;
             BodyDimensions = bodyDimensions;
-            this.bodyWeight = bodyWeight;
+            getBodyWeight = BodyWeight;
             BodySim = bodySim;
             DisplayType = displayType;
             this.displaySize = displaySize;
             this.resolution = resolution;
-            this.sensors = sensors;
+            features_sensors = sensors;
             this.os = os;
         }
 
-    
+
         public string OEM
         {
             get { return oem; }
@@ -73,8 +71,8 @@ namespace TestReading
 
         public string Status
         {
-            get { return status; }
-            set { status = value; }
+            get { return launchStatus; }
+            set { launchStatus = value; }
         }
 
         public string BodyDimensions
@@ -83,7 +81,7 @@ namespace TestReading
             set { body_dimensions = value; }
         }
 
-        public float BodyWeight
+        public float getBodyWeight
         {
             get { return body_weight; }
             set { body_weight = value; }
@@ -113,7 +111,7 @@ namespace TestReading
             set { display_resolution = value; }
         }
 
-        public string FeaturesSensors
+        public string getFeatures_sensors
         {
             get { return features_sensors; }
             set { features_sensors = value; }
@@ -126,31 +124,23 @@ namespace TestReading
         }
 
 
+
         public string toString()
         {
-            String str = "";
-
-            str += "Cell Phone -> {\n";
-            str += $"\tOEM : '{OEM}',\n";
-            str += $"\tModel : '{Model}',\n";
-            str += $"\tLaunch Announced : {LaunchAnnounced},\n";
-            str += $"\tLaunch Year : {(YearReleased != 0 ? YearReleased.ToString() : "NULL")},\n";
-            str += $"\tLaunch Status : '{Status}',\n";
-            str += $"\tBody Dimensions : '{BodyDimensions}',\n";
-            str += $"\tBody Weight : {BodyWeight},\n";
-            str += $"\tBody Sim : '{BodySim}',\n";
-            str += $"\tDisplay Type : '{DisplayType}'\n";
-            str += $"\tDisplay Size : {DisplaySize},\n";
-            str += $"\tDisplay Resolution : '{DisplayResolution}',\n";
-            str += $"\tFeatures Sensors : '{FeaturesSensors}',\n";
-            str += $"\tPlatform Os : '{PlatformOS}'\n";
-            str += "}";
-
-
-
-            return str;
+            return "CellPhone{" +
+           "oem='" + oem + '\'' +
+           ", model='" + model + '\'' +
+           ", launch_announced=" + launchStatus +
+           ", launch_status='" + launch_announced + '\'' +
+           ", body_dimensions='" + body_dimensions + '\'' +
+           ", body_weight=" + body_weight +
+           ", body_sim='" + body_sim + '\'' +
+           ", display_type='" + display_type + '\'' +
+           ", display_size=" + display_size +
+           ", display_resolution='" + display_resolution + '\'' +
+           ", features_sensors='" + features_sensors + '\'' +
+           ", platform_os='" + platform_os + '\'' +
+           '}';
         }
-
-
     }
 }
