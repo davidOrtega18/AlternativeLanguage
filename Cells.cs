@@ -21,21 +21,20 @@ namespace TestReading
         private float display_size;
         private string display_resolution;
         private string features_sensors;
-        private string platform_os;
         private int? announcedYear;
         private string launchStatus;
         private float? displaySize;
         private string resolution;
         private string os;
 
-        public Cells(string oem, string model, int? announcedYear, string launchStatus, string bodyDimensions, float BodyWeight, string bodySim, string displayType, float? displaySize, string resolution, string sensors, string os)
+        public Cells(string oem, string model, int? announcedYear, string launchStatus, string bodyDimensions, float body_weight, string bodySim, string displayType, float? displaySize, string resolution, string sensors, string os)
         {
             this.oem = oem;
             this.model = model;
             this.announcedYear = announcedYear;
             this.launchStatus = launchStatus;
             BodyDimensions = bodyDimensions;
-            getBodyWeight = BodyWeight;
+            getBodyWeight = body_weight;
             BodySim = bodySim;
             DisplayType = displayType;
             this.displaySize = displaySize;
@@ -119,8 +118,8 @@ namespace TestReading
 
         public string PlatformOS
         {
-            get { return platform_os; }
-            set { platform_os = value; }
+            get { return os; }
+            set { os = value; }
         }
 
 
@@ -139,7 +138,7 @@ namespace TestReading
            ", display_size=" + display_size +
            ", display_resolution='" + display_resolution + '\'' +
            ", features_sensors='" + features_sensors + '\'' +
-           ", platform_os='" + platform_os + '\'' +
+           ", platform_os='" + os + '\'' +
            '}';
         }
     }

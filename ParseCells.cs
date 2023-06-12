@@ -162,7 +162,7 @@ namespace TestReading
             {
                 return null;
             }
-            input = input.Substring(0, index).Replace(@"[^\d]", "");
+            input = input.Substring(0, index).Replace(@"[^\\D]", "");
             float? res = null;
             try
             {
@@ -318,13 +318,13 @@ namespace TestReading
             List<float> res = new List<float>();
             foreach (Cells phone in list)
             {
-                if (phone.getBodyWeight != null)
+                if (phone.getBodyWeight > 0)
                 {
-                    res.Add((float)phone.getBodyWeight);
-                  
+                    continue;
                 }
+                res.Add((float)phone.getBodyWeight);
             }
-            
+           
             res.Sort();
 
             return res[0];
